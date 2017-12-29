@@ -7,6 +7,6 @@ open WebJobExample.Functions
 let main argv =
     let config = JobHostConfiguration()
     if config.IsDevelopment then config.UseDevelopmentSettings()
-    use host = new JobHost()
+    use host = new JobHost(config)
     host.RunAndBlock()
     0 // return an integer exit code
