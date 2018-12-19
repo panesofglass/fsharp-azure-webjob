@@ -3,8 +3,10 @@ framework: auto-detect
 storage: none
 nuget FSharp.Core
 nuget Microsoft.Azure.WebJobs
+nuget Microsoft.Azure.WebJobs.Extensions
 nuget Microsoft.Azure.WebJobs.Extensions.Storage
 nuget Microsoft.Azure.WebJobs.Host.Storage
 nuget Microsoft.Azure.WebJobs.Logging
 nuget Microsoft.Azure.WebJobs.Logging.ApplicationInsights
+nuget Microsoft.Extensions.Logging.Console
 nuget System.Configuration.ConfigurationManager
