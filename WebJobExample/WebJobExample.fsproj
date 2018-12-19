@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Functions.fs" />
     <Compile Include="Program.fs" />
+    <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>

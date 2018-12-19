@@ -2,8 +2,11 @@ module WebJobExample.Program
 
 open System
 open System.Configuration
+open System.IO
+open System.Reflection
 open Microsoft.Azure.WebJobs
 open Microsoft.Azure.WebJobs.Host
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
@@ -23,10 +26,16 @@ let main argv =
                  .AddAzureStorage()
                  .AddTimers() |> ignore
             )
+            .ConfigureAppConfiguration(fun b ->
+                b.SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+                 .AddJsonFile("appsettings.json")
+                 .AddEnvironmentVariables() |> ignore
+            )
             .ConfigureLogging(fun b ->
                 b.SetMinimumLevel(LogLevel.Debug) |> ignore
+                b.AddConsole() |> ignore
 
-                let appInsightsKey = ""
+                let appInsightsKey = ConfigurationManager.AppSettings.["APPLICATION_INSIGHTS_KEY"]
                 if not (String.IsNullOrEmpty appInsightsKey) then
                     b.AddApplicationInsights(fun config -> config.InstrumentationKey <- appInsightsKey) |> ignore
             )
