@@ -158,6 +158,7 @@ x64/
 x86/
 bld/
 build/
+deploy/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
