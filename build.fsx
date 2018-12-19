@@ -1,42 +1,59 @@
-// include Fake libs
-#r "./packages/FAKE/tools/FakeLib.dll"
+#r "paket:
+source release/dotnetcore
+source https://api.nuget.org/v3/index.json
+nuget BlackFox.Fake.BuildTask
+nuget Fake.Core.Target
+nuget Fake.DotNet.Cli
+nuget Fake.IO.FileSystem
+nuget Fake.IO.Zip //"
+#load "./.fake/build.fsx/intellisense.fsx"
+#if !FAKE
+#r "Facades/netstandard"
+#r "netstandard"
+#endif
 
-open Fake
+open BlackFox.Fake
+open Fake.DotNet
+open Fake.IO
+open Fake.IO.Globbing.Operators
+open System.IO
+open System.Xml.Linq
 
 // Directories
-let buildDir  = "./build/"
-let deployDir = "./deploy/"
+let buildDir  = Path.Combine(__SOURCE_DIRECTORY__, "./build/")
+let deployDir = Path.Combine(__SOURCE_DIRECTORY__, "./deploy/")
+let versionFile = Path.Combine(__SOURCE_DIRECTORY__, "Directory.Build.props")
 
-
-// Filesets
-let appReferences  =
-    !! "/**/*.csproj"
-    ++ "/**/*.fsproj"
-
-// version info
-let version = "0.1"  // or retrieve from CI server
+let getVersion (versionFile:string) =
+    let doc = XElement.Load versionFile
+    let version =
+        doc.Elements().Elements()
+        |> Seq.filter (fun e -> e.Name.LocalName = "VersionPrefix")
+        |> Seq.head
+    version.Value
 
 // Targets
-Target "Clean" (fun _ ->
-    CleanDirs [buildDir; deployDir]
-)
+let cleanTask =
+    BuildTask.create "Clean" [] {
+        Shell.cleanDirs [buildDir; deployDir]
+    }
 
-Target "Build" (fun _ ->
-    // compile all projects below src/app/
-    MSBuildDebug buildDir "Build" appReferences
-    |> Log "AppBuild-Output: "
-)
+let buildTask =
+    BuildTask.create "Build" [cleanTask] {
+        "WebJobExample/WebJobExample.fsproj"
+        |> DotNet.build (fun p ->
+            { p with
+                Configuration = DotNet.BuildConfiguration.Release
+                OutputPath = Some buildDir
+            }) 
+    }
 
-Target "Deploy" (fun _ ->
+BuildTask.create "Deploy" [buildTask] {
+    let version = getVersion versionFile
     !! (buildDir + "/**/*.*")
     -- "*.zip"
-    |> Zip buildDir (deployDir + "ApplicationName." + version + ".zip")
-)
-
-// Build order
-"Clean"
-  ==> "Build"
-  ==> "Deploy"
+    |> Zip.zip buildDir (deployDir + "ApplicationName." + version + ".zip")
+}
 
 // start build
-RunTargetOrDefault "Build"
+BuildTask.runOrDefault buildTask
