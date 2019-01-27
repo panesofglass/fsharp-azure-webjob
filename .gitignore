@@ -158,6 +158,7 @@ x64/
 x86/
 bld/
 build/
+deploy/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
@@ -382,7 +383,6 @@ FakesAssemblies/
 _Pvt_Extensions
 
 # Paket dependency manager
-.paket/paket.exe
 paket-files/
 
 # FAKE - F# Make

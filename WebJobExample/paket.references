@@ -1,3 +1,10 @@
 FSharp.Core
 Microsoft.Azure.WebJobs
+Microsoft.Azure.WebJobs.Core
 Microsoft.Azure.WebJobs.Extensions
+Microsoft.Azure.WebJobs.Extensions.Storage
+Microsoft.Azure.WebJobs.Host.Storage
+Microsoft.Azure.WebJobs.Logging
+Microsoft.Azure.WebJobs.Logging.ApplicationInsights
+Microsoft.Extensions.Logging.Console
+System.Configuration.ConfigurationManager
