@@ -33,7 +33,7 @@ let main argv =
                 b.AddConsole() |> ignore
                 let appInsightsKey = ctx.Configuration.["APPINSIGHTS_INSTRUMENTATIONKEY"]
                 if not (String.IsNullOrEmpty appInsightsKey) then
-                    b.AddApplicationInsights(appInsightsKey) |> ignore
+                    b.AddApplicationInsightsWebJobs(fun o -> o.InstrumentationKey <- appInsightsKey) |> ignore
             )
             .ConfigureServices(fun ctx services ->
                 // This seems to correctly add the name resolver for the QueueTrigger

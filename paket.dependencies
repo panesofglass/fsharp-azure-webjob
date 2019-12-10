@@ -9,3 +9,4 @@ nuget Microsoft.Azure.WebJobs.Host.Storage
 nuget Microsoft.Azure.WebJobs.Logging
 nuget Microsoft.Azure.WebJobs.Logging.ApplicationInsights
 nuget Microsoft.Extensions.Logging.Console
+nuget TaskBuilder.fs
