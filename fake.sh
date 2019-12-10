@@ -2,4 +2,8 @@
 
 dotnet tool restore
 dotnet paket restore
-dotnet fake build $@
+if [ ! -z "$@" ]; then
+    dotnet fake run build.fsx --target $@
+else
+    dotnet fake build
+fi

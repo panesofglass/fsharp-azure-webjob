@@ -4,7 +4,7 @@ cls
 dotnet tool restore
 dotnet paket restore
 if not "%*"=="" (
-    dotnet fake build --target %*
+    dotnet fake run build.fsx --target %*
 ) else (
     dotnet fake build
 )
