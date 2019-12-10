@@ -1,7 +1,6 @@
 module WebJobExample.Program
 
 open System
-open System.Configuration
 open System.IO
 open System.Reflection
 open Microsoft.Azure.WebJobs
@@ -10,16 +9,15 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
-let configNameResolver =
+let configNameResolver (config:IConfiguration) =
     { new INameResolver with
-        member __.Resolve(name) =
-            ConfigurationManager.AppSettings.[name] }
+        member __.Resolve(name) = config.[name] }
 
 [<EntryPoint>]
 let main argv =
     let builder =
         HostBuilder()
-            .UseEnvironment("Development")
+            .UseEnvironment(Environments.Development)
             .ConfigureWebJobs(fun b ->
                 b.AddAzureStorageCoreServices()
                  .AddAzureStorage()
@@ -30,16 +28,16 @@ let main argv =
                  .AddJsonFile("appsettings.json")
                  .AddEnvironmentVariables() |> ignore
             )
-            .ConfigureLogging(fun b ->
+            .ConfigureLogging(fun ctx b ->
                 b.SetMinimumLevel(LogLevel.Debug) |> ignore
                 b.AddConsole() |> ignore
-                let appInsightsKey = ConfigurationManager.AppSettings.["APPLICATION_INSIGHTS_KEY"]
+                let appInsightsKey = ctx.Configuration.["APPINSIGHTS_INSTRUMENTATIONKEY"]
                 if not (String.IsNullOrEmpty appInsightsKey) then
                     b.AddApplicationInsights(appInsightsKey) |> ignore
             )
-            .ConfigureServices(fun services ->
+            .ConfigureServices(fun ctx services ->
                 // This seems to correctly add the name resolver for the QueueTrigger
-                services.AddSingleton(configNameResolver) |> ignore
+                services.AddSingleton(configNameResolver ctx.Configuration) |> ignore
                 // Next error is that the ExampleStorage connection string cannot be found
                 //services.AddSingleton(
                 //    StorageAccountProvider( ???
