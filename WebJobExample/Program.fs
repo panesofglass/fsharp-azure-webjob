@@ -5,7 +5,6 @@ open System.Configuration
 open System.IO
 open System.Reflection
 open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Host
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
@@ -34,10 +33,9 @@ let main argv =
             .ConfigureLogging(fun b ->
                 b.SetMinimumLevel(LogLevel.Debug) |> ignore
                 b.AddConsole() |> ignore
-
                 let appInsightsKey = ConfigurationManager.AppSettings.["APPLICATION_INSIGHTS_KEY"]
                 if not (String.IsNullOrEmpty appInsightsKey) then
-                    b.AddApplicationInsights(fun config -> config.InstrumentationKey <- appInsightsKey) |> ignore
+                    b.AddApplicationInsights(appInsightsKey) |> ignore
             )
             .ConfigureServices(fun services ->
                 // This seems to correctly add the name resolver for the QueueTrigger

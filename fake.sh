@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-dotnet restore build.proj
-dotnet fake $@
+dotnet tool restore
+dotnet paket restore
+dotnet fake build $@

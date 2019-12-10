@@ -1,5 +1,5 @@
 source https://www.nuget.org/api/v2
-framework: auto-detect
+framework: netcoreapp3.1
 storage: none
 nuget FSharp.Core
 nuget Microsoft.Azure.WebJobs

@@ -1,9 +1,10 @@
 @echo off
 cls
 
-dotnet restore build.proj
+dotnet tool restore
+dotnet paket restore
 if not "%*"=="" (
-    dotnet fake run build.fsx --target %*
+    dotnet fake build --target %*
 ) else (
-    dotnet fake run build.fsx
+    dotnet fake build
 )
